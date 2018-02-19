@@ -82,6 +82,34 @@ const c8* const GEOMETRY_SHADER_TYPE_NAMES[] = {
 	"gs_4_0",
 	0 };
 
+//! Enum for supported tessellation control shader types
+enum E_TESS_CONTROL_SHADER_TYPE
+{
+	ETCST_TCS_4_0 = 0,
+
+	//! This is not a type, but a value indicating how much types there are.
+	ETCST_COUNT
+};
+
+//! String names for supported tessellation control shader types
+const c8* const TESS_CONTROL_SHADER_TYPE_NAMES[] = {
+	"tcs_4_0",
+	0 };
+
+//! Enum for supported tessellation evaluation shader types
+enum E_TESS_EVALUATION_SHADER_TYPE
+{
+	ETEST_TES_4_0 = 0,
+
+	//! This is not a type, but a value indicating how much types there are.
+	ETEST_COUNT
+};
+
+//! String names for supported tessellation evaluation shader types
+const c8* const TESS_EVALUATION_SHADER_TYPE_NAMES[] = {
+	"tes_4_0",
+	0 };
+
 
 } // end namespace video
 } // end namespace irr

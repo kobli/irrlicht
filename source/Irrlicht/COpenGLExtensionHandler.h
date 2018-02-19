@@ -1105,6 +1105,10 @@ class COpenGLExtensionHandler
 	// blend operations
 	void extGlBlendEquation(GLenum mode);
 
+	//
+	void extGlPatchParameterfv(GLenum pname, const float* values);
+	void extGlPatchParameteri(GLenum pname, GLuint value);
+
 	// the global feature array
 	bool FeatureAvailable[IRR_OpenGL_Feature_Count];
 
@@ -1234,6 +1238,8 @@ class COpenGLExtensionHandler
 		PFNGLGETOCCLUSIONQUERYUIVNVPROC pGlGetOcclusionQueryuivNV;
 		PFNGLBLENDEQUATIONEXTPROC pGlBlendEquationEXT;
 		PFNGLBLENDEQUATIONPROC pGlBlendEquation;
+		PFNGLPATCHPARAMETERFVPROC pGlPatchParameterfv;
+		PFNGLPATCHPARAMETERIPROC pGlPatchParameteri;
 		#if defined(WGL_EXT_swap_control)
 		PFNWGLSWAPINTERVALEXTPROC pWglSwapIntervalEXT;
 		#endif
@@ -2370,6 +2376,30 @@ inline void COpenGLExtensionHandler::extGlBlendEquationIndexed(GLuint buf, GLenu
 	glBlendEquationIndexedAMD(buf, mode);
 #else
 	os::Printer::log("glBlendEquationIndexed not supported", ELL_ERROR);
+#endif
+}
+
+inline void COpenGLExtensionHandler::extGlPatchParameterfv(GLenum pname, const float* values)
+{
+#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+	if (pGlPatchParameterfv)
+		pGlPatchParameterfv(pname, values);
+#elif defined(GL_ARB_tesselation_shader)
+	glPatchParameterfv();
+#else
+	os::Printer::log("glPatchParameterfv not supported", ELL_ERROR);
+#endif
+}
+
+inline void COpenGLExtensionHandler::extGlPatchParameteri(GLenum pname, GLuint value)
+{
+#if defined(_IRR_OPENGL_USE_EXTPOINTER_)
+	if (pGlPatchParameteri)
+		pGlPatchParameteri(pname, value);
+#elif defined(GL_ARB_tesselation_shader)
+	glPatchParameteri();
+#else
+	os::Printer::log("glPatchParameteri not supported", ELL_ERROR);
 #endif
 }
 

@@ -1741,7 +1741,16 @@ void COpenGLDriver::renderArray(const void* indexList, u32 primitiveCount,
 			glDrawElements(GL_TRIANGLE_FAN, primitiveCount+2, indexSize, indexList);
 			break;
 		case scene::EPT_TRIANGLES:
-			glDrawElements(GL_TRIANGLES, primitiveCount*3, indexSize, indexList);
+			{
+				int pt = GL_TRIANGLES;
+				if (static_cast<uint32_t>(Material.MaterialType) < MaterialRenderers.size())
+				{
+					IMaterialRenderer* shaderRenderer = MaterialRenderers[Material.MaterialType].Renderer;
+					if (shaderRenderer && shaderRenderer->isTessellation())
+						pt = GL_PATCHES;
+				}
+				glDrawElements(pt, primitiveCount*3, indexSize, indexList);
+			}
 			break;
 		case scene::EPT_QUAD_STRIP:
 			glDrawElements(GL_QUAD_STRIP, primitiveCount*2+2, indexSize, indexList);
@@ -3942,6 +3951,12 @@ s32 COpenGLDriver::addHighLevelShaderMaterial(
 	const c8* pixelShaderProgram,
 	const c8* pixelShaderEntryPointName,
 	E_PIXEL_SHADER_TYPE psCompileTarget,
+	const c8* tessControlShaderProgram,
+	const c8* tessControlShaderEntryPointName,
+	E_TESS_CONTROL_SHADER_TYPE tcsCompileTarget,
+	const c8* tessEvaluationShaderProgram,
+	const c8* tessEvaluationShaderEntryPointName,
+	E_TESS_EVALUATION_SHADER_TYPE tesCompileTarget,
 	const c8* geometryShaderProgram,
 	const c8* geometryShaderEntryPointName,
 	E_GEOMETRY_SHADER_TYPE gsCompileTarget,
@@ -3974,6 +3989,8 @@ s32 COpenGLDriver::addHighLevelShaderMaterial(
 			this, nr,
 			vertexShaderProgram, vertexShaderEntryPointName, vsCompileTarget,
 			pixelShaderProgram, pixelShaderEntryPointName, psCompileTarget,
+			tessControlShaderProgram, tessControlShaderEntryPointName, tcsCompileTarget,
+			tessEvaluationShaderProgram, tessEvaluationShaderEntryPointName, tesCompileTarget,
 			geometryShaderProgram, geometryShaderEntryPointName, gsCompileTarget,
 			inType, outType, verticesOut,
 			callback,getMaterialRenderer(baseMaterial), userData);

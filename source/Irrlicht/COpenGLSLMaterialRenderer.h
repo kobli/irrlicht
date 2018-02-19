@@ -60,6 +60,12 @@ public:
 		const c8* pixelShaderProgram = 0,
 		const c8* pixelShaderEntryPointName = 0,
 		E_PIXEL_SHADER_TYPE psCompileTarget = video::EPST_PS_1_1,
+		const c8* tessControlShaderProgram = 0,
+		const c8* tessControlShaderEntryPointName = "main",
+		E_TESS_CONTROL_SHADER_TYPE tcsCompileTarget = ETCST_TCS_4_0,
+		const c8* tessEvaluationShaderProgram = 0,
+		const c8* tessEvaluationShaderEntryPointName = "main",
+		E_TESS_EVALUATION_SHADER_TYPE tesCompileTarget = ETEST_TES_4_0,
 		const c8* geometryShaderProgram = 0,
 		const c8* geometryShaderEntryPointName = "main",
 		E_GEOMETRY_SHADER_TYPE gsCompileTarget = EGST_GS_4_0,
@@ -95,6 +101,8 @@ public:
 	virtual void setPixelShaderConstant(const f32* data, s32 startRegister, s32 constantAmount=1);
 	virtual IVideoDriver* getVideoDriver();
 
+	virtual bool isTessellation() const {return tessellationPatchVertices!=-1;}
+
 protected:
 
 	//! constructor only for use by derived classes who want to
@@ -108,6 +116,9 @@ protected:
 		const c8* vertexShaderProgram, 
 		const c8* pixelShaderProgram,
 		const c8* geometryShaderProgram,
+		const c8* tessControlShaderProgram,
+		const c8* tessEvaluationShaderProgram,
+		s32 tessPatchVertices,
 		scene::E_PRIMITIVE_TYPE inType=scene::EPT_TRIANGLES,
 		scene::E_PRIMITIVE_TYPE outType=scene::EPT_TRIANGLE_STRIP,
 		u32 verticesOut=0);
@@ -130,6 +141,7 @@ protected:
 	GLuint Program2;
 	core::array<SUniformInfo> UniformInfo;
 	s32 UserData;
+	s32 tessellationPatchVertices;
 };
 
 

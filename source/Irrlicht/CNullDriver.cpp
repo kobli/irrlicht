@@ -2045,6 +2045,12 @@ s32 CNullDriver::addHighLevelShaderMaterial(
 	const c8* pixelShaderProgram,
 	const c8* pixelShaderEntryPointName,
 	E_PIXEL_SHADER_TYPE psCompileTarget,
+	const c8* tessControlShaderProgram,
+	const c8* tessControlShaderEntryPointName,
+	E_TESS_CONTROL_SHADER_TYPE tcsCompileTarget,
+	const c8* tessEvaluationShaderProgram,
+	const c8* tessEvaluationShaderEntryPointName,
+	E_TESS_EVALUATION_SHADER_TYPE tesCompileTarget,
 	const c8* geometryShaderProgram,
 	const c8* geometryShaderEntryPointName,
 	E_GEOMETRY_SHADER_TYPE gsCompileTarget,
@@ -2068,6 +2074,12 @@ s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
 		const io::path& pixelShaderProgramFileName,
 		const c8* pixelShaderEntryPointName,
 		E_PIXEL_SHADER_TYPE psCompileTarget,
+		const io::path& tessControlShaderProgramFileName,
+		const c8* tessControlShaderEntryPointName,
+		E_TESS_CONTROL_SHADER_TYPE tcsCompileTarget,
+		const io::path& tessEvaluationShaderProgramFileName,
+		const c8* tessEvaluationShaderEntryPointName,
+		E_TESS_EVALUATION_SHADER_TYPE tesCompileTarget,
 		const io::path& geometryShaderProgramFileName,
 		const c8* geometryShaderEntryPointName,
 		E_GEOMETRY_SHADER_TYPE gsCompileTarget,
@@ -2079,6 +2091,8 @@ s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
 {
 	io::IReadFile* vsfile = 0;
 	io::IReadFile* psfile = 0;
+	io::IReadFile* tcsfile = 0;
+	io::IReadFile* tesfile = 0;
 	io::IReadFile* gsfile = 0;
 
 	if (vertexShaderProgramFileName.size() )
@@ -2101,6 +2115,26 @@ s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
 		}
 	}
 
+	if (tessControlShaderProgramFileName.size() )
+	{
+		tcsfile = FileSystem->createAndOpenFile(tessControlShaderProgramFileName);
+		if (!tcsfile)
+		{
+			os::Printer::log("Could not open tessellation control shader program file",
+				tessControlShaderProgramFileName, ELL_WARNING);
+		}
+	}
+
+	if (tessEvaluationShaderProgramFileName.size() )
+	{
+		tesfile = FileSystem->createAndOpenFile(tessEvaluationShaderProgramFileName);
+		if (!tesfile)
+		{
+			os::Printer::log("Could not open tessellation evaluation shader program file",
+				tessEvaluationShaderProgramFileName, ELL_WARNING);
+		}
+	}
+
 	if (geometryShaderProgramFileName.size() )
 	{
 		gsfile = FileSystem->createAndOpenFile(geometryShaderProgramFileName);
@@ -2114,6 +2148,8 @@ s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
 	s32 result = addHighLevelShaderMaterialFromFiles(
 		vsfile, vertexShaderEntryPointName, vsCompileTarget,
 		psfile, pixelShaderEntryPointName, psCompileTarget,
+		tcsfile, tessControlShaderEntryPointName, tcsCompileTarget,
+		tesfile, tessEvaluationShaderEntryPointName, tesCompileTarget,
 		gsfile, geometryShaderEntryPointName, gsCompileTarget,
 		inType, outType, verticesOut,
 		callback, baseMaterial, userData, shadingLang);
@@ -2123,6 +2159,12 @@ s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
 
 	if (vsfile)
 		vsfile->drop();
+
+	if (tcsfile)
+		tcsfile->drop();
+
+	if (tesfile)
+		tesfile->drop();
 
 	if (gsfile)
 		gsfile->drop();
@@ -2140,6 +2182,12 @@ s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
 		io::IReadFile* pixelShaderProgram,
 		const c8* pixelShaderEntryPointName,
 		E_PIXEL_SHADER_TYPE psCompileTarget,
+		io::IReadFile* tessControlShaderProgram,
+		const c8* tessControlShaderEntryPointName,
+		E_TESS_CONTROL_SHADER_TYPE tcsCompileTarget,
+		io::IReadFile* tessEvaluationShaderProgram,
+		const c8* tessEvaluationShaderEntryPointName,
+		E_TESS_EVALUATION_SHADER_TYPE tesCompileTarget,
 		io::IReadFile* geometryShaderProgram,
 		const c8* geometryShaderEntryPointName,
 		E_GEOMETRY_SHADER_TYPE gsCompileTarget,
@@ -2151,6 +2199,8 @@ s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
 {
 	c8* vs = 0;
 	c8* ps = 0;
+	c8* tcs = 0;
+	c8* tes = 0;
 	c8* gs = 0;
 
 	if (vertexShaderProgram)
@@ -2178,6 +2228,28 @@ s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
 		}
 	}
 
+	if (tessControlShaderProgram)
+	{
+		const long size = tessControlShaderProgram->getSize();
+		if (size)
+		{
+			tcs = new c8[size+1];
+			tessControlShaderProgram->read(tcs, size);
+			tcs[size] = 0;
+		}
+	}
+
+	if (tessEvaluationShaderProgram)
+	{
+		const long size = tessEvaluationShaderProgram->getSize();
+		if (size)
+		{
+			tes = new c8[size+1];
+			tessEvaluationShaderProgram->read(tes, size);
+			tes[size] = 0;
+		}
+	}
+
 	if (geometryShaderProgram)
 	{
 		const long size = geometryShaderProgram->getSize();
@@ -2196,12 +2268,16 @@ s32 CNullDriver::addHighLevelShaderMaterialFromFiles(
 	s32 result = this->addHighLevelShaderMaterial(
 		vs, vertexShaderEntryPointName, vsCompileTarget,
 		ps, pixelShaderEntryPointName, psCompileTarget,
+		tcs, tessControlShaderEntryPointName, tcsCompileTarget,
+		tes, tessEvaluationShaderEntryPointName, tesCompileTarget,
 		gs, geometryShaderEntryPointName, gsCompileTarget,
 		inType, outType, verticesOut,
 		callback, baseMaterial, userData, shadingLang);
 
 	delete [] vs;
 	delete [] ps;
+	delete [] tcs;
+	delete [] tes;
 	delete [] gs;
 
 	return result;

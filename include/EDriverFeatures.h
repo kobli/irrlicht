@@ -121,6 +121,9 @@ namespace video
 		//! Support for NVidia's CG shader language
 		EVDF_CG,
 
+		//! Supports tessellation shaders
+		EVDF_TESSELLATION_SHADER,
+
 		//! Only used for counting the elements of this enum
 		EVDF_COUNT
 	};

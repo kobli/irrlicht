@@ -78,7 +78,9 @@ COpenGLExtensionHandler::COpenGLExtensionHandler() :
 	pGlIsOcclusionQueryNV(0), pGlBeginOcclusionQueryNV(0),
 	pGlEndOcclusionQueryNV(0), pGlGetOcclusionQueryivNV(0),
 	pGlGetOcclusionQueryuivNV(0),
-	pGlBlendEquationEXT(0), pGlBlendEquation(0)
+	pGlBlendEquationEXT(0), pGlBlendEquation(0),
+	//
+	pGlPatchParameterfv(0), pGlPatchParameteri(0)
 #if defined(GLX_SGI_swap_control)
 	,pGlxSwapIntervalSGI(0)
 #endif
@@ -547,6 +549,10 @@ void COpenGLExtensionHandler::initExtensions(bool stencilBuffer)
 	pGlBlendEquationEXT = (PFNGLBLENDEQUATIONEXTPROC) IRR_OGL_LOAD_EXTENSION("glBlendEquationEXT");
 	pGlBlendEquation = (PFNGLBLENDEQUATIONPROC) IRR_OGL_LOAD_EXTENSION("glBlendEquation");
 
+	//
+	pGlPatchParameterfv = (PFNGLPATCHPARAMETERFVPROC) IRR_OGL_LOAD_EXTENSION("glPatchParameterfv");
+	pGlPatchParameteri = (PFNGLPATCHPARAMETERIPROC) IRR_OGL_LOAD_EXTENSION("glPatchParameteri");
+
 	// get vsync extension
 	#if defined(WGL_EXT_swap_control) && !defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
 		pWglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC) IRR_OGL_LOAD_EXTENSION("wglSwapIntervalEXT");
@@ -792,6 +798,8 @@ bool COpenGLExtensionHandler::queryFeature(E_VIDEO_DRIVER_FEATURE feature) const
 	case EVDF_CG:
 #endif
 		return true;
+	case EVDF_TESSELLATION_SHADER:
+		return FeatureAvailable[IRR_ARB_tessellation_shader];
 	default:
 		return false;
 	};

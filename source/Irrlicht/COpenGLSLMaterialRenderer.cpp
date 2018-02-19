@@ -35,6 +35,12 @@ COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(video::COpenGLDriver* drive
 		const c8* pixelShaderProgram,
 		const c8* pixelShaderEntryPointName,
 		E_PIXEL_SHADER_TYPE psCompileTarget,
+		const c8* tessControlShaderProgram,
+		const c8* tessControlShaderEntryPointName,
+		E_TESS_CONTROL_SHADER_TYPE tcsCompileTarget,
+		const c8* tessEvaluationShaderProgram,
+		const c8* tessEvaluationShaderEntryPointName,
+		E_TESS_EVALUATION_SHADER_TYPE tesCompileTarget,
 		const c8* geometryShaderProgram,
 		const c8* geometryShaderEntryPointName,
 		E_GEOMETRY_SHADER_TYPE gsCompileTarget,
@@ -63,7 +69,11 @@ COpenGLSLMaterialRenderer::COpenGLSLMaterialRenderer(video::COpenGLDriver* drive
 	if (!Driver->queryFeature(EVDF_ARB_GLSL))
 		return;
 
-	init(outMaterialTypeNr, vertexShaderProgram, pixelShaderProgram, geometryShaderProgram);
+	s32 tessPatchVertices = -1;
+	if(tessEvaluationShaderProgram)
+		tessPatchVertices = 3;
+
+	init(outMaterialTypeNr, vertexShaderProgram, pixelShaderProgram, geometryShaderProgram, tessControlShaderProgram, tessEvaluationShaderProgram, tessPatchVertices);
 }
 
 
@@ -126,9 +136,13 @@ void COpenGLSLMaterialRenderer::init(s32& outMaterialTypeNr,
 		const c8* vertexShaderProgram,
 		const c8* pixelShaderProgram,
 		const c8* geometryShaderProgram,
+		const c8* tessControlShaderProgram,
+		const c8* tessEvaluationShaderProgram,
+		s32 tessPatchVertices,
 		scene::E_PRIMITIVE_TYPE inType, scene::E_PRIMITIVE_TYPE outType,
 		u32 verticesOut)
 {
+	tessellationPatchVertices = tessPatchVertices;
 	outMaterialTypeNr = -1;
 
 	if (!createProgram())
@@ -142,6 +156,18 @@ void COpenGLSLMaterialRenderer::init(s32& outMaterialTypeNr,
 	if (pixelShaderProgram)
 		if (!createShader(GL_FRAGMENT_SHADER_ARB, pixelShaderProgram))
 			return;
+#endif
+
+#if defined(GL_ARB_tessellation_shader)
+	if (Driver->queryFeature(EVDF_TESSELLATION_SHADER))
+	{
+		if (tessControlShaderProgram)
+			if (!createShader(GL_TESS_CONTROL_SHADER, tessControlShaderProgram))
+				return;
+		if (tessEvaluationShaderProgram)
+			if (!createShader(GL_TESS_EVALUATION_SHADER, tessEvaluationShaderProgram))
+				return;
+	}
 #endif
 
 #if defined(GL_ARB_geometry_shader4) || defined(GL_EXT_geometry_shader4) || defined(GL_NV_geometry_program4) || defined(GL_NV_geometry_shader4)
@@ -182,6 +208,15 @@ bool COpenGLSLMaterialRenderer::OnRender(IMaterialRendererServices* service,
 	// call callback to set shader constants
 	if (CallBack && (Program||Program2))
 		CallBack->OnSetConstants(this, UserData);
+
+	if (tessellationPatchVertices!=-1)
+	{
+		Driver->extGlPatchParameteri(GL_PATCH_VERTICES, tessellationPatchVertices);
+		GLfloat outer[] = {1.f,1.f,1.f,1.f};
+		Driver->extGlPatchParameterfv(GL_PATCH_DEFAULT_OUTER_LEVEL,outer);
+		GLfloat inner[] = {1.f,1.f};
+		Driver->extGlPatchParameterfv(GL_PATCH_DEFAULT_INNER_LEVEL,inner);
+	}
 
 	return true;
 }
