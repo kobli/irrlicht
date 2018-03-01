@@ -350,7 +350,7 @@ namespace video
 		virtual u32 getMaximalPrimitiveCount() const;
 
 		virtual ITexture* addRenderTargetTexture(const core::dimension2d<u32>& size,
-				const io::path& name, const ECOLOR_FORMAT format = ECF_UNKNOWN);
+				const io::path& name, const ECOLOR_FORMAT format = ECF_UNKNOWN, u32 textureFlags = 0);
 
 		//! set or reset render target
 		virtual bool setRenderTarget(video::E_RENDER_TARGET target, bool clearTarget,

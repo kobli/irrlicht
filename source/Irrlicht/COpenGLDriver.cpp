@@ -4012,7 +4012,9 @@ IVideoDriver* COpenGLDriver::getVideoDriver()
 
 ITexture* COpenGLDriver::addRenderTargetTexture(const core::dimension2d<u32>& size,
 					const io::path& name,
-					const ECOLOR_FORMAT format)
+					const ECOLOR_FORMAT format,
+				 	u32 textureFlags
+					)
 {
 	//disable mip-mapping
 	bool generateMipLevels = getTextureCreationFlag(ETCF_CREATE_MIP_MAPS);
@@ -4023,7 +4025,7 @@ ITexture* COpenGLDriver::addRenderTargetTexture(const core::dimension2d<u32>& si
 	// if driver supports FrameBufferObjects, use them
 	if (queryFeature(EVDF_FRAMEBUFFER_OBJECT))
 	{
-		rtt = new COpenGLFBOTexture(size, name, this, format);
+		rtt = new COpenGLFBOTexture(size, name, this, format, textureFlags);
 		if (rtt)
 		{
 			bool success = false;

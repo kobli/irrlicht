@@ -11,6 +11,7 @@
 #include "COpenGLDriver.h"
 #include "os.h"
 #include "CColorConverter.h"
+#include "ETextureFlags.h"
 
 #include "irrString.h"
 
@@ -665,7 +666,7 @@ static bool checkFBOStatus(COpenGLDriver* Driver);
 //! RTT ColorFrameBuffer constructor
 COpenGLFBOTexture::COpenGLFBOTexture(const core::dimension2d<u32>& size,
 					const io::path& name, COpenGLDriver* driver,
-					ECOLOR_FORMAT format)
+					ECOLOR_FORMAT format, u32 textureFlags)
 	: COpenGLTexture(name, driver), DepthTexture(0), ColorFrameBuffer(0)
 {
 	#ifdef _DEBUG
@@ -697,6 +698,11 @@ COpenGLFBOTexture::COpenGLFBOTexture(const core::dimension2d<u32>& size,
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, FilteringType);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	if(textureFlags & ETF_COMPARE_LEQUAL)
+	{
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	}
 	glTexImage2D(GL_TEXTURE_2D, 0, InternalFormat, ImageSize.Width,
 		ImageSize.Height, 0, PixelFormat, PixelType, 0);
 #ifdef _DEBUG
