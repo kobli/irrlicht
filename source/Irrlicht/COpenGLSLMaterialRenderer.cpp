@@ -631,19 +631,23 @@ bool COpenGLSLMaterialRenderer::setPixelShaderConstant(const c8* name, const boo
 
 	bool status = true;
 
+	GLint ints[4];
+	for (int i = 0; i < count; ++i)
+		ints[i] = bools[i];
+
 	switch (UniformInfo[i].type)
 	{
 		case GL_BOOL:
-			Driver->extGlUniform1iv(Location, count, (GLint*)bools);
+			Driver->extGlUniform1iv(Location, count, (GLint*)ints);
 			break;
 		case GL_BOOL_VEC2:
-			Driver->extGlUniform2iv(Location, count/2, (GLint*)bools);
+			Driver->extGlUniform2iv(Location, count/2, (GLint*)ints);
 			break;
 		case GL_BOOL_VEC3:
-			Driver->extGlUniform3iv(Location, count/3, (GLint*)bools);
+			Driver->extGlUniform3iv(Location, count/3, (GLint*)ints);
 			break;
 		case GL_BOOL_VEC4:
-			Driver->extGlUniform4iv(Location, count/4, (GLint*)bools);
+			Driver->extGlUniform4iv(Location, count/4, (GLint*)ints);
 			break;
 		default:
 			status = false;
