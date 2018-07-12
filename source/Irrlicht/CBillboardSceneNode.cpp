@@ -277,7 +277,7 @@ ISceneNode* CBillboardSceneNode::clone(ISceneNode* newParent, ISceneManager* new
 		newManager = SceneManager;
 
 	CBillboardSceneNode* nb = new CBillboardSceneNode(newParent,
-		newManager, ID, RelativeTranslation, Size);
+		newManager, ID, RelativeTranslation, Size, vertices[1].Color, vertices[0].Color);
 
 	nb->cloneMembers(this, newManager);
 	nb->Material = Material;
