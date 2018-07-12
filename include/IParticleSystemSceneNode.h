@@ -54,6 +54,9 @@ public:
 		const core::vector3df& scale = core::vector3df(1.0f, 1.0f, 1.0f))
 			: ISceneNode(parent, mgr, id, position, rotation, scale) {}
 
+	//! Creates a clone of this scene node and its children.
+	virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0) = 0;
+
 	//! Sets the size of all particles.
 	virtual void setParticleSize(
 		const core::dimension2d<f32> &size = core::dimension2d<f32>(5.0f, 5.0f)) = 0;

@@ -33,6 +33,9 @@ public:
 	//! destructor
 	virtual ~CParticleSystemSceneNode();
 
+	//! Creates a clone of this scene node and its children.
+	virtual ISceneNode* clone(ISceneNode* newParent=0, ISceneManager* newManager=0);
+
 	//! Gets the particle emitter, which creates the particles.
 	virtual IParticleEmitter* getEmitter();
 

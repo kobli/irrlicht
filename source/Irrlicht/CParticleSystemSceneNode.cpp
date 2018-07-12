@@ -714,6 +714,41 @@ void CParticleSystemSceneNode::deserializeAttributes(io::IAttributes* in, io::SA
 	}
 }
 
+//! Creates a clone of this scene node and its children.
+ISceneNode* CParticleSystemSceneNode::clone(ISceneNode* newParent, ISceneManager* newManager)
+{
+	if (!newParent)
+		newParent = Parent;
+	if (!newManager)
+		newManager = SceneManager;
+
+	CParticleSystemSceneNode* nb = new CParticleSystemSceneNode(false, newParent, newManager, ID,
+			RelativeTranslation, RelativeRotation, RelativeScale);
+
+	nb->cloneMembers(this, newManager);
+	nb->getMaterial(0) = Buffer->getMaterial();
+
+	//TODO can particle affectors and emitter be shared?
+	// If ParticleSystem is cloned and clones affector/emitter is modified, it would also affect the original
+	for(core::list<IParticleAffector*>::Iterator a = AffectorList.begin(); a != AffectorList.end(); ++a) {
+		nb->AffectorList.push_back(*a);
+		(*a)->grab();
+	}
+	nb->Emitter = Emitter;
+	nb->Emitter->grab();
+
+	nb->Particles = Particles;
+	nb->ParticleSize = ParticleSize;
+	nb->LastEmitTime = LastEmitTime;
+	nb->MaxParticles = MaxParticles;
+	nb->ParticlePrimitive = ParticlePrimitive;
+	nb->ParticlesAreGlobal = ParticlesAreGlobal;
+
+	if ( newParent )
+		nb->drop();
+	return nb;
+}
+
 
 } // end namespace scene
 } // end namespace irr
