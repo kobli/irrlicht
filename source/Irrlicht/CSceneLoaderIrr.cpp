@@ -88,9 +88,14 @@ void CSceneLoaderIrr::readSceneNode(io::IXMLReader* reader, ISceneNode* parent,
 		return;
 
 	scene::ISceneNode* node = 0;
+	bool skipAttributes = false;
 
 	if (!parent && IRR_XML_FORMAT_SCENE==reader->getNodeName())
 		node = SceneManager->getRootSceneNode();
+	else if (parent && IRR_XML_FORMAT_SCENE==reader->getNodeName()) {
+		skipAttributes = true;
+		node=parent;
+	}
 	else if (parent && IRR_XML_FORMAT_NODE==reader->getNodeName())
 	{
 		// find node type and create it
@@ -127,7 +132,7 @@ void CSceneLoaderIrr::readSceneNode(io::IXMLReader* reader, ISceneNode* parent,
 				io::IAttributes* attr = FileSystem->createEmptyAttributes(SceneManager->getVideoDriver());
 				attr->read(reader, true);
 
-				if (node)
+				if (node && !skipAttributes)
 					node->deserializeAttributes(attr);
 
 				attr->drop();
