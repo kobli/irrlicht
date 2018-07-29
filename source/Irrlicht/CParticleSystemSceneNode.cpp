@@ -734,8 +734,9 @@ ISceneNode* CParticleSystemSceneNode::clone(ISceneNode* newParent, ISceneManager
 		nb->AffectorList.push_back(*a);
 		(*a)->grab();
 	}
-	nb->Emitter = Emitter;
-	nb->Emitter->grab();
+        nb->Emitter = Emitter;
+        if(nb->Emitter)
+                nb->Emitter->grab();
 
 	nb->Particles = Particles;
 	nb->ParticleSize = ParticleSize;
