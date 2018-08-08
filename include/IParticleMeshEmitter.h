@@ -19,7 +19,7 @@ class IParticleMeshEmitter : public IParticleEmitter
 public:
 
 	//! Set Mesh to emit particles from
-	virtual void setMesh( IMesh* mesh ) = 0;
+	virtual void setMesh( const IMesh* mesh ) = 0;
 
 	//! Set whether to use vertex normal for direction, or direction specified
 	virtual void setUseNormalDirection( bool useNormalDirection = true ) = 0;

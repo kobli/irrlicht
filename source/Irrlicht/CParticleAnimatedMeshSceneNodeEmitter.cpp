@@ -36,6 +36,18 @@ CParticleAnimatedMeshSceneNodeEmitter::CParticleAnimatedMeshSceneNodeEmitter(
 	setAnimatedMeshSceneNode(node);
 }
 
+IParticleEmitter* CParticleAnimatedMeshSceneNodeEmitter::clone()
+{
+	return new CParticleAnimatedMeshSceneNodeEmitter(
+			Node, UseNormalDirection,
+			Direction, NormalDirectionModifier,
+			MBNumber, EveryMeshVertex,
+			MinParticlesPerSecond, MaxParticlesPerSecond,
+			MinStartColor, MaxStartColor,
+			MinLifeTime, MaxLifeTime, MaxAngleDegrees,
+			MinStartSize, MaxStartSize
+			);
+}
 
 //! Prepares an array with new particles to emitt into the system
 //! and returns how much new particles there are.

@@ -13,7 +13,7 @@ namespace scene
 
 //! constructor
 CParticleMeshEmitter::CParticleMeshEmitter(
-	IMesh* mesh, bool useNormalDirection,
+	const IMesh* mesh, bool useNormalDirection,
 	const core::vector3df& direction, f32 normalDirectionModifier,
 	s32 mbNumber, bool everyMeshVertex,
 	u32 minParticlesPerSecond, u32 maxParticlesPerSecond,
@@ -34,6 +34,20 @@ CParticleMeshEmitter::CParticleMeshEmitter(
 	setDebugName("CParticleMeshEmitter");
 	#endif
 	setMesh(mesh);
+}
+
+IParticleEmitter* CParticleMeshEmitter::clone()
+{
+	return new CParticleMeshEmitter(
+			Mesh, UseNormalDirection,
+			Direction, NormalDirectionModifier,
+			MBNumber, EveryMeshVertex,
+			MinParticlesPerSecond, MaxParticlesPerSecond,
+			MinStartColor, MaxStartColor,
+			MinLifeTime, MaxLifeTime, MaxAngleDegrees,
+			MinStartSize,
+			MaxStartSize
+			);
 }
 
 
@@ -164,7 +178,7 @@ s32 CParticleMeshEmitter::emitt(u32 now, u32 timeSinceLastCall, SParticle*& outA
 
 
 //! Set Mesh to emit particles from
-void CParticleMeshEmitter::setMesh(IMesh* mesh)
+void CParticleMeshEmitter::setMesh(const IMesh* mesh)
 {
 	Mesh = mesh;
 

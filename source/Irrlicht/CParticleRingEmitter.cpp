@@ -34,6 +34,19 @@ CParticleRingEmitter::CParticleRingEmitter(
 	#endif
 }
 
+IParticleEmitter* CParticleRingEmitter::clone()
+{
+	return new CParticleRingEmitter(
+			Center, Radius, RingThickness,
+			Direction, MinParticlesPerSecond,
+			MaxParticlesPerSecond, MinStartColor,
+			MaxStartColor, MinLifeTime, MaxLifeTime,
+			MaxAngleDegrees,
+			MinStartSize,
+			MaxStartSize
+			);
+}
+
 
 //! Prepares an array with new particles to emitt into the system
 //! and returns how much new particles there are.

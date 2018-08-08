@@ -46,6 +46,9 @@ class IParticleEmitter : public virtual io::IAttributeExchangingObject
 {
 public:
 
+	//! Creates a clone of this emitter. The pointer should be dropped.
+	virtual IParticleEmitter* clone() = 0;
+
 	//! Prepares an array with new particles to emitt into the system
 	/** \param now Current time.
 	\param timeSinceLastCall Time elapsed since last call, in milliseconds.

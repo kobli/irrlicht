@@ -728,15 +728,13 @@ ISceneNode* CParticleSystemSceneNode::clone(ISceneNode* newParent, ISceneManager
 	nb->cloneMembers(this, newManager);
 	nb->getMaterial(0) = Buffer->getMaterial();
 
-	//TODO can particle affectors and emitter be shared?
-	// If ParticleSystem is cloned and clones affector/emitter is modified, it would also affect the original
+	//TODO deep-clone affectors
 	for(core::list<IParticleAffector*>::Iterator a = AffectorList.begin(); a != AffectorList.end(); ++a) {
 		nb->AffectorList.push_back(*a);
 		(*a)->grab();
 	}
-        nb->Emitter = Emitter;
-        if(nb->Emitter)
-                nb->Emitter->grab();
+	if(Emitter)
+		nb->Emitter = Emitter->clone();
 
 	nb->Particles = Particles;
 	nb->ParticleSize = ParticleSize;

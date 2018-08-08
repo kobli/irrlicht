@@ -35,6 +35,18 @@ CParticleSphereEmitter::CParticleSphereEmitter(
 
 }
 
+IParticleEmitter* CParticleSphereEmitter::clone()
+{
+	return new CParticleSphereEmitter(
+			Center, Radius,
+			Direction, MinParticlesPerSecond,
+			MaxParticlesPerSecond, MinStartColor,
+			MaxStartColor, MinLifeTime, MaxLifeTime,
+			MaxAngleDegrees,
+			MinStartSize,
+			MaxStartSize
+			);
+}
 
 //! Prepares an array with new particles to emitt into the system
 //! and returns how much new particles there are.

@@ -37,6 +37,9 @@ public:
 		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f)
 	);
 
+	//! Creates a clone of this emitter. The pointer should be dropped.
+	virtual IParticleEmitter* clone();
+
 	//! Prepares an array with new particles to emitt into the system
 	//! and returns how much new particles there are.
 	virtual s32 emitt(u32 now, u32 timeSinceLastCall, SParticle*& outArray);

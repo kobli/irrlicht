@@ -22,7 +22,7 @@ public:
 
 	//! constructor
 	CParticleMeshEmitter(
-		IMesh* mesh, bool useNormalDirection = true,
+		const IMesh* mesh, bool useNormalDirection = true,
 		const core::vector3df& direction = core::vector3df(0.0f,0.0f,0.0f),
 		f32 normalDirectionModifier = 100.0f,
 		s32 mbNumber = -1,
@@ -38,12 +38,15 @@ public:
 		const core::dimension2df& maxStartSize = core::dimension2df(5.0f,5.0f)
 	);
 
+	//! Creates a clone of this emitter. The pointer should be dropped.
+	virtual IParticleEmitter* clone();
+
 	//! Prepares an array with new particles to emitt into the system
 	//! and returns how much new particles there are.
 	virtual s32 emitt(u32 now, u32 timeSinceLastCall, SParticle*& outArray);
 
 	//! Set Mesh to emit particles from
-	virtual void setMesh( IMesh* mesh );
+	virtual void setMesh( const IMesh* mesh );
 
 	//! Set whether to use vertex normal for direction, or direction specified
 	virtual void setUseNormalDirection( bool useNormalDirection ) { UseNormalDirection = useNormalDirection; }
